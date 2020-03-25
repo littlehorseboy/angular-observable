@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 
 const observable = new Observable<number>((observer) => {
   observer.next(1);
+  // observer.complete();
 });
 
 let a = 1;
@@ -16,10 +17,14 @@ observable
   .pipe(
     map((value) => value * 2),
   )
-  .subscribe((value) => {
-    a = value;
+  .subscribe({
+    next(value) {
+      a = value;
+    },
+    // complete() {
+    //   a = 3;
+    // },
   });
-
 
 @Component({
   selector: 'app-root',
@@ -27,5 +32,5 @@ observable
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = a;
+  a = a;
 }
