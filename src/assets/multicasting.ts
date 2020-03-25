@@ -55,4 +55,4 @@ setTimeout(() => {
     next(value) { console.log(`2st subscribe:  ${value}`); },
     complete() { console.log('2st sequence finished.'); },
   });
-}, 1500);
+}, 500);
