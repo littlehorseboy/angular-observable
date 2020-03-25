@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -6,7 +6,6 @@ import '../assets/observable';
 
 const observable = new Observable<number>((observer) => {
   observer.next(1);
-  // observer.complete();
 });
 
 let a = 1;
@@ -23,9 +22,6 @@ observable
     next(value) {
       a = value;
     },
-    // complete() {
-    //   a = 3;
-    // },
   });
 
 @Component({
@@ -33,6 +29,32 @@ observable
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
   a = a;
+
+  @ViewChild('name') nameInputRef: ElementRef;
+
+  ngAfterViewInit(): void {
+    function fromEvent(target: HTMLInputElement, eventName: string) {
+      return new Observable((observer) => {
+        const handler = (e) => observer.next(e);
+
+        target.addEventListener(eventName, handler);
+
+        return () => {
+          target.removeEventListener(eventName, handler);
+        };
+      });
+    }
+
+    const ESC_KEY = 'Escape';
+    const nameInput: HTMLInputElement = this.nameInputRef.nativeElement;
+
+    fromEvent(nameInput, 'keydown')
+      .subscribe((e: KeyboardEvent) => {
+        if (e.key === ESC_KEY) {
+          nameInput.value = '';
+        }
+      });
+  }
 }
