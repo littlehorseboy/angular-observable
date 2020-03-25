@@ -1,5 +1,8 @@
 # AngularObservable
 
+> 參考此頁實作
+> https://angular.tw/guide/observables
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.5.
 
 ## Development server

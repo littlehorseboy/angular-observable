@@ -2,7 +2,7 @@ import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import '../assets/observable';
+import '../assets/multicasting';
 
 const observable = new Observable<number>((observer) => {
   observer.next(1);
