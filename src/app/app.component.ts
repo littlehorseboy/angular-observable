@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import '../assets/of';
+import '../assets/observable';
 
 const observable = new Observable<number>((observer) => {
   observer.next(1);
