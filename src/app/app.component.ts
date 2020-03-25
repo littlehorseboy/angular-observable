@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import '../assets/of';
+
 const observable = new Observable<number>((observer) => {
   observer.next(1);
   // observer.complete();
