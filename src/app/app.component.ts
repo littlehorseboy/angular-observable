@@ -50,11 +50,15 @@ export class AppComponent implements AfterViewInit {
     const ESC_KEY = 'Escape';
     const nameInput: HTMLInputElement = this.nameInputRef.nativeElement;
 
-    fromEvent(nameInput, 'keydown')
+    const subscription = fromEvent(nameInput, 'keydown')
       .subscribe((e: KeyboardEvent) => {
         if (e.key === ESC_KEY) {
           nameInput.value = '';
         }
       });
+
+    setTimeout(() => {
+      subscription.unsubscribe();
+    }, 3000);
   }
 }
