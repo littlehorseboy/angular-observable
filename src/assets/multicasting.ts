@@ -1,32 +1,58 @@
 import { Observable } from 'rxjs';
 
-function sequenceSubscriber(observer) {
+function multicastSequenceSubscriber() {
   const seq = [1, 2, 3];
+
+  const observers = [];
+
   let timeoutId: ReturnType<typeof setTimeout>;
 
-  function doSequence(arr: Array<any>, idx: number) {
-    timeoutId = setTimeout(() => {
-      observer.next(arr[idx]);
-      if (idx === arr.length - 1) {
-        observer.complete();
-      } else {
-        doSequence(arr, idx += 1);
-      }
-    }, 1000);
-  }
+  return (observer) => {
+    observers.push(observer);
 
-  doSequence(seq, 0);
+    if (observers.length === 1) {
+      timeoutId = doSequence({
+        next(value) {
+          observers.forEach((obs) => obs.next(value));
+        },
+        complete() {
+          observers.slice(0).forEach((obs) => obs.complete());
+        },
+      }, seq, 0);
+    }
 
-  return {
-    unsubscribe() {
-      clearTimeout(timeoutId);
-    },
+    return {
+      unsubscribe() {
+        observers.splice(observers.indexOf(observer), 1);
+        if (observers.length === 0) {
+          clearTimeout(timeoutId);
+        }
+      },
+    };
   };
 }
 
-const sequence = new Observable(sequenceSubscriber);
+function doSequence(observer, arr, idx) {
+  return setTimeout(() => {
+    observer.next(arr[idx]);
+    if (idx === arr.length - 1) {
+      observer.complete();
+    } else {
+      doSequence(observer, arr, idx += 1);
+    }
+  }, 1000);
+}
 
-sequence.subscribe({
-  next(value) { console.log(value); },
-  complete() { console.log('Finished sequence'); },
+const multicastSequence = new Observable(multicastSequenceSubscriber());
+
+multicastSequence.subscribe({
+  next(value) { console.log(`1st subscribe:  ${value}`); },
+  complete() { console.log('1st sequence finished.'); },
 });
+
+setTimeout(() => {
+  multicastSequence.subscribe({
+    next(value) { console.log(`2st subscribe:  ${value}`); },
+    complete() { console.log('2st sequence finished.'); },
+  });
+}, 1500);
