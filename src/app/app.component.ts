@@ -1,4 +1,15 @@
 import { Component } from '@angular/core';
+import { Observable, of } from 'rxjs';
+
+const observable = new Observable<number>((observer) => {
+  observer.next(1);
+});
+
+let a = 1;
+
+observable.subscribe((value) => {
+  a = value;
+});
 
 @Component({
   selector: 'app-root',
@@ -6,5 +17,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'angular-observable';
+  title = a;
 }
